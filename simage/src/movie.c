@@ -142,7 +142,9 @@ s_movie_create(const char * filename, s_params * params /* | NULL */)
   add_internal_exporters();
 
   exp = exporters;
+  printf("exp %p\n", exp);
   while (exp) {
+    printf("iter exp %p\n", exp);
     if (exp->create(filename, movie, params)) break;
     exp = exp->next;
   }

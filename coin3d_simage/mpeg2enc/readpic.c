@@ -123,6 +123,7 @@ read_y_u_v(simpeg_encode_context * context, char *fname, unsigned char **frame)
   char name[128];
   FILE *fd;
   int width, height, chroma_format, vertical_size, horizontal_size;
+  int res;
 
   width = context->width;
   height = context->height;
@@ -140,7 +141,7 @@ read_y_u_v(simpeg_encode_context * context, char *fname, unsigned char **frame)
     simpeg_encode_error(context,context->errortext);
   }
   for (i=0; i<vertical_size; i++)
-    fread(frame[0]+i*width,1,horizontal_size,fd);
+    res = fread(frame[0]+i*width,1,horizontal_size,fd);
   fclose(fd);
   border_extend(frame[0],horizontal_size,vertical_size,width,height);
   
@@ -151,7 +152,7 @@ read_y_u_v(simpeg_encode_context * context, char *fname, unsigned char **frame)
     simpeg_encode_error(context,context->errortext);
   }
   for (i=0; i<chrom_vsize; i++)
-    fread(frame[1]+i*context->chrom_width,1,chrom_hsize,fd);
+    res = fread(frame[1]+i*context->chrom_width,1,chrom_hsize,fd);
   fclose(fd);
   border_extend(frame[1],chrom_hsize,chrom_vsize,context->chrom_width,context->chrom_height);
 
@@ -162,7 +163,7 @@ read_y_u_v(simpeg_encode_context * context, char *fname, unsigned char **frame)
     simpeg_encode_error(context,context->errortext);
   }
   for (i=0; i<chrom_vsize; i++)
-    fread(frame[2]+i*context->chrom_width,1,chrom_hsize,fd);
+    res = fread(frame[2]+i*context->chrom_width,1,chrom_hsize,fd);
   fclose(fd);
   border_extend(frame[2],chrom_hsize,chrom_vsize,context->chrom_width,context->chrom_height);
 }
@@ -173,6 +174,7 @@ static void read_yuv(simpeg_encode_context * context,char *fname, unsigned char 
   int chrom_hsize, chrom_vsize;
   char name[128];
   FILE *fd;
+  int res;
 
   int width, height, chroma_format, vertical_size, horizontal_size;
 
@@ -196,17 +198,17 @@ static void read_yuv(simpeg_encode_context * context,char *fname, unsigned char 
 
   /* Y */
   for (i=0; i<vertical_size; i++)
-    fread(frame[0]+i*width,1,horizontal_size,fd);
+    res = fread(frame[0]+i*width,1,horizontal_size,fd);
   border_extend(frame[0],horizontal_size,vertical_size,width,height);
 
   /* Cb */
   for (i=0; i<chrom_vsize; i++)
-    fread(frame[1]+i*context->chrom_width,1,chrom_hsize,fd);
+    res = fread(frame[1]+i*context->chrom_width,1,chrom_hsize,fd);
   border_extend(frame[1],chrom_hsize,chrom_vsize,context->chrom_width,context->chrom_height);
 
   /* Cr */
   for (i=0; i<chrom_vsize; i++)
-    fread(frame[2]+i*context->chrom_width,1,chrom_hsize,fd);
+    res = fread(frame[2]+i*context->chrom_width,1,chrom_hsize,fd);
   border_extend(frame[2],chrom_hsize,chrom_vsize,context->chrom_width,context->chrom_height);
 
   fclose(fd);

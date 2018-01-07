@@ -26,7 +26,7 @@
 # GNU gcc
 #
 CC = gcc
-CFLAGS = -Os -I. -Iinclude -I../include -DSIMAGE_MAJOR_VERSION="1" -DSIMAGE_MINOR_VERSION="2" -DSIMAGE_MICRO_VERSION="3" -DSIMAGE_MPEG2ENC_SUPPORT=1
+CFLAGS = -Os -I.
 
 all: mpeg2encode
 
