@@ -11,6 +11,8 @@
 #include "putseq.h"
 #include <simage_private.h>
 
+//#define USE_PUTSEQ_ENCODE_BITMAP
+
 static int
 SimpegWrite_encode(const char * output_filename,
                    const char * parameter_filename,
@@ -240,6 +242,7 @@ SimpegWrite_begin_encode(const char *output_filename,
   simpeg_encode_context * context;
 
   context = (simpeg_encode_context*) malloc(sizeof(simpeg_encode_context));
+
   init_context_data(context);
 
   if (setjmp(context->jmpbuf)) {
@@ -301,13 +304,22 @@ SimpegWrite_encode_bitmap(void * handle, const unsigned char *rgb_buffer)
   }
 
   if ((context->SimpegWrite_current_input_frame)%context->M == 0) {
+#ifdef USE_PUTSEQ_ENCODE_BITMAP
     /* encode this */
     SimpegWrite_putseq_encode_bitmap((simpeg_encode_context*) handle, rgb_buffer);
+#else
+    simpeg_encode_putseq((simpeg_encode_context*) handle);
+#endif
     /* encode the buffered ones */
     for (i = 0; i < context->M; i++) {
-      if (context->bufbuf[i] != NULL)
+      if (context->bufbuf[i] != NULL) {
+#ifdef USE_PUTSEQ_ENCODE_BITMAP
         SimpegWrite_putseq_encode_bitmap((simpeg_encode_context*) handle,
                                          context->bufbuf[i]);
+#else
+        simpeg_encode_putseq((simpeg_encode_context*) handle);
+#endif
+      }
     }
     /* clean buffer */
     for (i = 0; i < context->M; i++) {
@@ -345,8 +357,12 @@ SimpegWrite_end_encode(void * handle)
   /* before we're done - encode any buffered frames */
   for (i=0; i<context->M; i++) {
     if (context->bufbuf[i] != NULL) {
+#ifdef USE_PUTSEQ_ENCODE_BITMAP
       SimpegWrite_putseq_encode_bitmap((simpeg_encode_context*) handle,
                                        context->bufbuf[i]);
+#else
+      simpeg_encode_putseq((simpeg_encode_context*) handle);
+#endif
     }
   }
 
