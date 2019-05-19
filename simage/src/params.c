@@ -21,29 +21,11 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif /* HAVE_CONFIG_H */
-#include <simage.h>
+#include <simage_private.h>
 #include <string.h>
 #include <stdarg.h>
 
-struct simage_param_data {
-  int type;
-  char * name;
-  union {
-    int integerdata;
-    float floatdata;
-    double doubledata;
-    char * stringdata;
-    void * pointerdata;
-    void (*functiondata)();
-  } data;
-  struct simage_param_data * next;
-};
-
-typedef void s_generic_func();
-
-struct simage_parameters_s {
-  struct simage_param_data * list;
-};
+/** FREDRIK: MOVED STRUCTS TO <simage_private.h> */
 
 s_params *
 s_params_create(void)

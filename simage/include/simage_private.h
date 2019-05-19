@@ -50,6 +50,54 @@ extern "C" {
   void * s_stream_context_get(s_stream *stream);
   void s_stream_context_set(s_stream *stream, void *context);
 
+  /** FREDRIK: MOVED STRUCT DEFS FROM <movie.c> */
+  struct simage_movie_s {
+    char * filename;
+    s_movie_open_func * open;
+    s_movie_create_func * create;
+    s_movie_get_func * get;
+    s_movie_put_func * put;
+    s_movie_close_func * close;
+    s_params * params;
+  };
+  struct simage_movie_importer {
+    s_movie_open_func * open;
+    s_movie_get_func * get;
+    s_movie_close_func * close;
+    struct simage_movie_importer * next;
+  };
+  struct simage_movie_exporter {
+    s_movie_create_func * create;
+    s_movie_put_func * put;
+    s_movie_close_func * close;
+    struct simage_movie_exporter * next;
+  };
+  // FIXME: convert access to these variables into the singleton
+  // pattern. 20010917 mortene.
+  static struct simage_movie_importer * importers;
+  static struct simage_movie_exporter * exporters;
+  /** FREDRIK: END MOVED STRUCT DEFS FROM <movie.c> */
+
+  /** FREDRIK: MOVED STRUCT DEFS FROM <params.c> */
+  struct simage_param_data {
+    int type;
+    char * name;
+    union {
+      int integerdata;
+      float floatdata;
+      double doubledata;
+      char * stringdata;
+      void * pointerdata;
+      void (*functiondata)();
+    } data;
+    struct simage_param_data * next;
+  };
+  typedef void s_generic_func();
+  struct simage_parameters_s {
+    struct simage_param_data * list;
+  };
+  /** FREDRIK: END MOVED STRUCT DEFS FROM <params.c> */
+
 #ifdef __cplusplus
 }
 #endif

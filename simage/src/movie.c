@@ -28,7 +28,6 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif /* HAVE_CONFIG_H */
-#include <simage.h>
 #include <simage_private.h>
 #include <string.h>
 
@@ -40,38 +39,7 @@
 #include "simage_avi.h"
 #endif /* SIMAGE_AVIENC_SUPPORT */
 
-struct simage_movie_s {
-  char * filename;
-
-  s_movie_open_func * open;
-  s_movie_create_func * create;
-  s_movie_get_func * get;
-  s_movie_put_func * put;
-  s_movie_close_func * close;
-
-  s_params * params;
-};
-
-struct simage_movie_importer {
-  s_movie_open_func * open;
-  s_movie_get_func * get;
-  s_movie_close_func * close;
-
-  struct simage_movie_importer * next;
-};
-
-struct simage_movie_exporter {
-  s_movie_create_func * create;
-  s_movie_put_func * put;
-  s_movie_close_func * close;
-
-  struct simage_movie_exporter * next;
-};
-
-// FIXME: convert access to these variables into the singleton
-// pattern. 20010917 mortene.
-static struct simage_movie_importer * importers;
-static struct simage_movie_exporter * exporters;
+/** FREDRIK: MOVED STRUCTS TO <simage_private.h> */
 
 static void
 add_internal_importers(void)
@@ -142,9 +110,7 @@ s_movie_create(const char * filename, s_params * params /* | NULL */)
   add_internal_exporters();
 
   exp = exporters;
-  printf("exp %p\n", exp);
   while (exp) {
-    printf("iter exp %p\n", exp);
     if (exp->create(filename, movie, params)) break;
     exp = exp->next;
   }
